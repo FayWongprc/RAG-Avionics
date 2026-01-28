@@ -1,0 +1,19 @@
+# 虚拟环境
+rag_venv/
+
+# SpecStory插件
+.specstory/
+
+#环境变量
+#.env
+
+# IDE
+.vscode/
+.idea/
+
+# 项目数据（按需调整）
+storage/
+
+# 日志
+*.log
+logs/
