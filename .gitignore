@@ -17,3 +17,10 @@ storage/
 # 日志
 *.log
 logs/
+
+# Python 缓存和编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
