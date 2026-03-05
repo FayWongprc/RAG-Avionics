@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from io import BytesIO
 from typing import Any
-
 import pandas as pd
-
 from .schemas import AtomicRequirement, IEEE829TestCase
 
 

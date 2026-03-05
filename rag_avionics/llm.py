@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 from langchain_deepseek import ChatDeepSeek
-
 from .settings import ModelSettings, require_env
 
 

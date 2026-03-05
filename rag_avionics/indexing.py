@@ -43,7 +43,6 @@ def build_or_load_index(
     rebuild: bool = False,
 ) -> VectorStoreIndex:
     """构建或加载向量索引。
-
     - 使用 Qdrant 本地持久化向量库
     - 使用 LlamaIndex 负责读取 PDF、分块、入库
     """

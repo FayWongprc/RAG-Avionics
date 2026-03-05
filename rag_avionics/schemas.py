@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from typing import Optional
 from pydantic import BaseModel, Field
 
@@ -20,7 +19,7 @@ class AtomicRequirement(BaseModel):
 
 
 class IEEE829TestCase(BaseModel):
-    """简化版 IEEE 829 用例结构（毕设展示友好）。"""
+    """简化版 IEEE 829 用例结构。"""
 
     tc_id: str = Field(description="测试用例ID，例如 TC-REQ-LG-001-01")
     title: str = Field(description="用例标题")
@@ -39,11 +38,11 @@ class IEEE829TestCase(BaseModel):
         description="引用的证据来源标识（例如文件名/页码/章节）",
     )
 
-
+#分解结果
 class DecomposeOutput(BaseModel):
     atomic_requirements: list[AtomicRequirement]
 
-
+#生成结果
 class GenerateOutput(BaseModel):
     test_cases: list[IEEE829TestCase]
 
