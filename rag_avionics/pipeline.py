@@ -34,17 +34,36 @@ class RagState(TypedDict, total=False):
 
 
 def _safe_json_loads(text: str) -> Any:
+    """尽量容错地从 LLM 输出中提取 JSON。"""
     text = text.strip()
     if "{" in text and "}" in text:
         text = text[text.find("{") : text.rfind("}") + 1]
     try:
         return orjson.loads(text)
     except Exception:
+        pass
+    try:
         return json.loads(text)
+    except Exception:
+        pass
+    # 兜底：尝试修复被截断的 JSON（补齐缺失的括号）
+    try:
+        patched = text.rstrip().rstrip(",")
+        # 数未闭合的括号
+        open_braces = patched.count("{") - patched.count("}")
+        open_brackets = patched.count("[") - patched.count("]")
+        patched += "]" * max(open_brackets, 0)
+        patched += "}" * max(open_braces, 0)
+        return json.loads(patched)
+    except Exception as e:
+        raise ValueError(f"无法解析 LLM 输出的 JSON: {e}\n原文前500字符: {text[:500]}")
 
 
 # 最低相似度阈值：低于此分数的结果视为无关噪声，直接丢弃
 DOMAIN_SCORE_THRESHOLD = 0.35
+
+# 用于支撑测试用例生成的严格阈值：确保喂给 LLM 的证据是高度相关的
+EVIDENCE_SCORE_THRESHOLD = 0.45
 
 
 def build_graph(*, index: VectorStoreIndex, ms: ModelSettings):
@@ -119,7 +138,10 @@ def build_graph(*, index: VectorStoreIndex, ms: ModelSettings):
         evidences: dict[str, list[dict]] = {}
         for ar in state.get("atomic_requirements", []):
             query = ar.statement
-            evidences[ar.req_id] = retrieve_context(index, query, top_k=ms.top_k)
+            raw_results = retrieve_context(index, query, top_k=ms.top_k)
+            # 使用更严格的阈值过滤，确保找出的标准证据是高度相关的
+            filtered_results = [r for r in raw_results if r.get("score", 0) >= EVIDENCE_SCORE_THRESHOLD]
+            evidences[ar.req_id] = filtered_results
         return {"evidences": evidences}
 
     def generate(state: RagState) -> RagState:

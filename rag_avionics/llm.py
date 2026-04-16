@@ -9,7 +9,9 @@ def make_deepseek_chat(ms: ModelSettings, *, temperature: float = 0.2) -> ChatDe
     return ChatDeepSeek(
         model=ms.llm_model,
         temperature=temperature,
-        max_tokens=2048,
+        max_tokens=8192,
         api_key=api_key,
     )
+
+
 
