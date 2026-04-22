@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from pydantic import BaseModel, Field
 
+#本文件定义了系统中所有数据结构的规范，使用 Pydantic 来确保数据的类型安全和格式正确
 
 class AtomicRequirement(BaseModel):
     """原子需求（尽量一条需求一个可验证的断言/约束）。"""
@@ -20,10 +21,11 @@ class AtomicRequirement(BaseModel):
 
 class IEEE829TestCase(BaseModel):
     """简化版 IEEE 829 用例结构。"""
-
     tc_id: str = Field(description="测试用例ID，例如 TC-REQ-LG-001-01")
     title: str = Field(description="用例标题")
     objective: str = Field(description="测试目的")
+    test_method: str = Field(description="测试方法（正常范围/边界值/健壮性/逻辑组合）")
+    design_rationale: str = Field(description="设计该用例的核心推导逻辑。要求：简洁清晰，严格控制在50字以内，特别是对边界值精度的设定解释")
     preconditions: list[str] = Field(default_factory=list, description="前置条件")
     inputs: list[str] = Field(default_factory=list, description="输入/刺激")
     steps: list[str] = Field(default_factory=list, description="测试步骤")

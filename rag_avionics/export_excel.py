@@ -60,6 +60,8 @@ def build_traceability_excel(state: dict[str, Any]) -> bytes:
                 "tc_id": tc.tc_id,
                 "title": tc.title,
                 "objective": tc.objective,
+                "test_method": getattr(tc, 'test_method', ''),
+                "design_rationale": getattr(tc, 'design_rationale', ''),
                 "trace_to_source_req": tc.trace_to_source_req or requirement_id,
                 "trace_to_atomic_req": tc.trace_to_atomic_req,
                 "preconditions": "\n".join(tc.preconditions or []),

@@ -1,6 +1,5 @@
 from __future__ import annotations
 import textwrap
-from collections import defaultdict
 from dataclasses import replace
 import streamlit as st
 
@@ -13,28 +12,25 @@ from rag_avionics.export_excel import build_traceability_excel
 def _render_evidence(ev: list[dict]):
     for i, e in enumerate(ev, start=1):
         ref = e.get("ref", "KB")
-        st.markdown(f"**[{i}] {ref}** | score={e.get('score', 0):.3f}")
+        category = e.get("category", "Unknown")
+        category_label = "📘 标准" if category == "Standards" else "📄 SRD"
+        st.markdown(f"**[{i}] {category_label} | {ref}** | score={e.get('score', 0):.3f}")
         st.code((e.get("text") or "")[:2200], language=None)
 
 
 def _render_domain_context(domain_context: list[dict]):
-    """按术语分组，每个术语一个可展开条目，展开后显示片段和来源。"""
-    grouped: dict[str, list[dict]] = defaultdict(list)
+    """显示匹配到的术语定义（来自本地词典）。"""
+    if not domain_context:
+        return
+    
     for e in domain_context:
         term = e.get("matched_term", "未知术语")
-        grouped[term].append(e)
-
-    for term, items in grouped.items():
-        items_sorted = sorted(items, key=lambda x: x.get("score", 0), reverse=True)[:2]
-        with st.expander(f"领域术语：{term}", expanded=False):
-            for i, e in enumerate(items_sorted):
-                ref = e.get("ref", "KB")
-                text = (e.get("text") or "").strip()
-                score = e.get("score", 0)
-                st.caption(f"来源：{ref} | score={score:.3f}")
-                st.code(text[:800], language=None)
-                if i < len(items_sorted) - 1:
-                    st.markdown("---")
+        text = (e.get("text") or "").strip()
+        ref = e.get("ref", "术语词典")
+        
+        with st.expander(f"术语：{term}", expanded=False):
+            st.caption(f"来源：{ref}")
+            st.markdown(text)
 
 
 st.set_page_config(page_title="基于RAG的机载软件需求解析与测试用例生成系统", layout="wide")
@@ -51,11 +47,56 @@ st.title("基于RAG的机载软件需求解析与测试用例生成系统")
 
 with st.sidebar:
     st.header("系统设置")
+    
+    # LLM 模型选择
+    st.subheader("🤖 LLM 模型")
+    llm_provider = st.selectbox(
+        "选择模型提供商",
+        options=["qwen","deepseek", "zhipu"],
+        format_func=lambda x: {"qwen": "阿里千问 (Qwen)","deepseek": "DeepSeek", "zhipu": "智谱AI (GLM)" }[x],
+        index=0,  # 默认选择 qwen
+        help="选择用于需求分解和测试用例生成的大语言模型"
+    )
+    
+    # 根据选择的提供商显示不同的模型选项
+    if llm_provider == "deepseek":
+        llm_model = st.selectbox(
+            "DeepSeek 模型",
+            options=["deepseek-chat", "deepseek-reasoner"],
+            index=0,
+            help="💡 deepseek-chat: 速度快 | reasoner: 深度推理"
+        )
+        api_key_hint = "DEEPSEEK_API_KEY"
+    elif llm_provider == "zhipu":
+        llm_model = st.selectbox(
+            "智谱 GLM 模型",
+            options=["glm-5.1", "glm-5", "glm-4.7", "glm-4.7-FlashX"],
+            index=0,
+            help="GLM-5.1 是最新旗舰模型"
+        )
+        api_key_hint = "ZHIPU_API_KEY"
+    else:  # qwen
+        llm_model = st.selectbox(
+            "千问模型",
+            options=["qwen3-max","qwen3.6-plus","qwen3.5-plus","qwen3.6-flash"],
+            index=0,
+            help="max为最强模型，plus能力均衡，flash速度最快"
+        )
+        api_key_hint = "DASHSCOPE_API_KEY"
+    
+    st.caption(f"需要环境变量：`{api_key_hint}`")
+    
+    st.divider()
+    
+    # 知识库设置
+    st.subheader("📚 知识库")
     st.caption("知识库目录（PDF 标准/规范）")
     rebuild = st.checkbox("重建向量库（首次运行建议勾选）", value=False)
-    top_k = st.slider("Top-K（每条原子需求检索证据数）", 2, 10, ms.top_k)
+    top_k = st.slider("Top-K（原子需求双路检索证据数）", 2, 8, ms.top_k)
+    window_size = st.slider("Window（句子窗口大小）", 2, 8, ms.sentence_window_size)
+    
     st.divider()
-    st.caption("需要环境变量：`DEEPSEEK_API_KEY`")
+    st.caption("✨ 使用句子窗口检索：精准匹配单句，扩展上下文")
 
 default_req = textwrap.dedent(
     """
@@ -76,11 +117,36 @@ with col_b:
     st.caption('提示：首次运行请在侧边栏勾选"重建向量库"。')
 
 if go:
-    ms_runtime = replace(ms, top_k=top_k)
+    # 根据用户选择动态更新模型配置
+    if llm_provider == "deepseek":
+        ms_runtime = replace(
+            ms, 
+            llm_provider="deepseek",
+            deepseek_model=llm_model,
+            top_k=top_k, 
+            sentence_window_size=window_size
+        )
+    elif llm_provider == "zhipu":
+        ms_runtime = replace(
+            ms, 
+            llm_provider="zhipu",
+            zhipu_model=llm_model,
+            top_k=top_k, 
+            sentence_window_size=window_size
+        )
+    else:  # qwen
+        ms_runtime = replace(
+            ms, 
+            llm_provider="qwen",
+            qwen_model=llm_model,
+            top_k=top_k, 
+            sentence_window_size=window_size
+        )
+    
     with st.spinner("加载/构建索引..."):
         index = _get_index(rebuild=rebuild)
 
-    with st.spinner("运行 RAG 流程（预检索→分解→检索→生成）..."):
+    with st.spinner(f"运行 RAG 流程（使用 {llm_model}）..."):
         out = run_pipeline(index=index, ms=ms_runtime, requirement_text=req_text)
 
     domain_context = out.get("domain_context", [])
@@ -91,10 +157,10 @@ if go:
     st.subheader("领域术语与约束")
 
     if domain_context:
-        st.caption("分解前从知识库检索到的领域术语与约束，用于确保专业术语准确无误：")
+        st.caption("从本地术语词典匹配到的专业术语定义，用于确保需求分解时术语准确无误：")
         _render_domain_context(domain_context)
     else:
-        st.info("未检索到相关领域术语。")
+        st.info("无需提取相关术语（未匹配到词典中的专业术语）。")
 
     st.subheader("原子需求")
 
@@ -116,14 +182,20 @@ if go:
                 else:
                     st.info("该原子需求没有检索到证据片段（可能是向量库为空或 top_k 太小）。")
 
-    st.subheader("IEEE 829 测试用例（简化模板）")
+    st.subheader("IEEE 829 测试用例生成")
     if not test_cases:
         st.warning("未生成测试用例；请检查 API Key、模型输出或输入质量。")
     else:
         for tc in test_cases:
             with st.expander(f"{tc.tc_id} | trace={tc.trace_to_atomic_req}", expanded=False):
+                # 推导逻辑放在最上面
+                if hasattr(tc, 'design_rationale') and tc.design_rationale:
+                    st.info(f"💡 **推导逻辑**：{tc.design_rationale}")
+                
                 st.markdown(f"**标题**：{tc.title}")
                 st.markdown(f"**目的**：{tc.objective}")
+                if hasattr(tc, 'test_method') and tc.test_method:
+                    st.markdown(f"**测试方法**：{tc.test_method}")
                 if tc.preconditions:
                     st.markdown("**前置条件**")
                     st.write(tc.preconditions)

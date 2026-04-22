@@ -1,5 +1,5 @@
 ## RAG-Avionics
-基于 `data/Avionics_files/` 内的航空/机载标准 PDF（例如 DO-178C、ARP4754A、IEEE 829），实现：
+基于 `data/Avionics_standards/` 内的航空/机载标准 PDF（例如 DO-178C、ARP4754A、IEEE 829），实现：
 - **需求原子化分解**（把一段需求拆成可验证的原子需求）
 - **RAG 证据检索**（从标准/规范中检索支撑片段）
 - **IEEE 829 风格测试用例生成**（带 trace 与证据引用，便于展示“可追溯性”）
