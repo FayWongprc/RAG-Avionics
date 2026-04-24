@@ -79,6 +79,7 @@ def make_deepseek_chat(ms: ModelSettings, *, temperature: float = 0.2):
         base_url="https://api.deepseek.com",
         model=ms.deepseek_model,
         temperature=temperature,
+        extra_body={"thinking": {"type": "disabled"}}  # 显式关闭思考模式
     )
 
 

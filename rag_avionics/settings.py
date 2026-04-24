@@ -29,7 +29,7 @@ class ModelSettings:
     llm_provider: str = "deepseek"  # 可选: "deepseek", "zhipu", "qwen"
     
     # DeepSeek 模型配置
-    deepseek_model: str = "deepseek-chat"  # DeepSeek 模型名称
+    deepseek_model: str = "deepseek-v4-flash"  # DeepSeek 模型名称
     deepseek_api_key_env: str = "DEEPSEEK_API_KEY"
     
     # 智谱 模型配置

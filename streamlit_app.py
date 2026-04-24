@@ -62,9 +62,9 @@ with st.sidebar:
     if llm_provider == "deepseek":
         llm_model = st.selectbox(
             "DeepSeek 模型",
-            options=["deepseek-chat", "deepseek-reasoner"],
+            options=["deepseek-v4-flash", "deepseek-v4-pro"],
             index=0,
-            help="💡 deepseek-chat: 速度快 | reasoner: 深度推理"
+            help="💡 2026/4/24 DeepSeek-V4 的预览版本正式上线并同步开源"
         )
         api_key_hint = "DEEPSEEK_API_KEY"
     elif llm_provider == "zhipu":
@@ -154,13 +154,13 @@ if go:
     evidences = out.get("evidences", {})
     test_cases = out.get("test_cases", [])
 
-    st.subheader("领域术语与约束")
+    st.subheader("领域术语解释")
 
     if domain_context:
         st.caption("从本地术语词典匹配到的专业术语定义，用于确保需求分解时术语准确无误：")
         _render_domain_context(domain_context)
     else:
-        st.info("无需提取相关术语（未匹配到词典中的专业术语）。")
+        st.info("无相关术语解释（未匹配到词典中的专业术语）。")
 
     st.subheader("原子需求")
 
