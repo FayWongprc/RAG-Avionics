@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机载软件需求解析流程图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 p-8">
+    
+    <!-- 导航按钮 -->
+    <div class="fixed top-4 right-4 z-50 flex gap-3">
+        <button onclick="showPage(1)" id="btn-1" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition">
+            第一页：RAG原理机制
+        </button>
+        <button onclick="showPage(2)" id="btn-2" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-purple-700 transition">
+            第二页：项目流程图
+        </button>
+        <button onclick="showPage(3)" id="btn-3" class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-emerald-700 transition">
+            第三页：运行示例 Demo
+        </button>
+    </div>
+
+    <!-- 第一页 -->
+    <div id="page-1" class="page active">
+        <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+            <h1 class="text-3xl font-black text-center mb-4 text-slate-800">RAG 原理机制</h1>
+            <p class="text-center text-slate-500 mb-8 text-base">检索增强生成（Retrieval-Augmented Generation）完整工作流程</p>
+
+            <div class="space-y-8">
+                
+                <!-- 步骤1 -->
+                <div class="relative bg-gradient-to-r from-blue-50 to-blue-100 border-4 border-blue-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">1</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-blue-900 mb-4">📥 文档导入与解析</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white p-5 rounded-xl border-2 border-blue-300 shadow-md">
+                                <div class="text-3xl mb-2">📄</div>
+                                <div class="font-bold text-base mb-2">多格式文档</div>
+                                <div class="text-sm text-slate-600">PDF、Word、Excel、HTML、JSON/XML</div>
+                            </div>
+                            <div class="flex items-center justify-center text-4xl text-blue-500 font-black">→</div>
+                            <div class="bg-white p-5 rounded-xl border-2 border-blue-300 shadow-md">
+                                <div class="text-3xl mb-2">🔧</div>
+                                <div class="font-bold text-base mb-2">文档加载器</div>
+                                <div class="text-sm text-slate-600">提取纯文本，保留结构信息</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><div class="text-5xl text-slate-400">↓</div></div>
+
+                <!-- 步骤2 -->
+                <div class="relative bg-gradient-to-r from-green-50 to-green-100 border-4 border-green-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">2</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-green-900 mb-4">✂️ 文档分块（Chunking）</h2>
+                        <div class="bg-green-50 p-4 rounded-xl border-2 border-green-300 mb-4">
+                            <div class="text-sm text-green-800 mb-2"><strong>目的：</strong>克服大模型上下文窗口限制，避免"注意力稀释"</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-5 rounded-xl border-2 border-green-300 shadow-md">
+                                <div class="font-bold text-base text-green-900 mb-2">策略1：固定大小分块</div>
+                                <div class="text-sm text-slate-600">按固定字符数/Token数切割 + 重叠区防止句意截断</div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border-2 border-green-300 shadow-md">
+                                <div class="font-bold text-base text-green-900 mb-2">策略2：语义分块</div>
+                                <div class="text-sm text-slate-600">计算相邻句子余弦相似度，超过阈值则合并为语义块</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><div class="text-5xl text-slate-400">↓</div></div>
+
+                <!-- 步骤3 -->
+                <div class="relative bg-gradient-to-r from-purple-50 to-purple-100 border-4 border-purple-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-purple-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">3</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-purple-900 mb-4">🧮 文本块的向量嵌入（Embedding）</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                            <div class="bg-white p-5 rounded-xl border-2 border-purple-300 shadow-md">
+                                <div class="text-3xl mb-2">📝</div>
+                                <div class="font-bold text-base mb-2">离散文本块</div>
+                                <div class="text-sm text-slate-600">"起落架控制逻辑..."</div>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="text-4xl text-purple-500 font-black mb-2">→</div>
+                                <div class="bg-purple-200 px-4 py-2 rounded-lg text-sm font-bold text-purple-900">嵌入模型<br/>(BGE-M3等)</div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border-2 border-purple-300 shadow-md">
+                                <div class="text-3xl mb-2">🔢</div>
+                                <div class="font-bold text-base mb-2">高维向量</div>
+                                <div class="text-xs text-slate-600 font-mono">[0.23, -0.45, 0.67, ...]</div>
+                                <div class="text-sm text-slate-500 mt-2">语义相近 → 距离相近</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><div class="text-5xl text-slate-400">↓</div></div>
+
+                <!-- 步骤4 -->
+                <div class="relative bg-gradient-to-r from-indigo-50 to-indigo-100 border-4 border-indigo-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">4</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-indigo-900 mb-4">🗄️ 向量数据库存储</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl border-2 border-indigo-300 shadow-md">
+                                <div class="text-4xl mb-3 text-center">🗄️</div>
+                                <div class="font-bold text-lg text-indigo-900 mb-2 text-center">向量数据库</div>
+                                <div class="text-sm text-slate-600 space-y-2">
+                                    <div>• <strong>ANN算法：</strong>HNSW、FLAT等</div>
+                                    <div>• <strong>检索速度：</strong>毫秒级相似度搜索</div>
+                                    <div>• <strong>元数据绑定：</strong>文档类别、页码、时间戳</div>
+                                </div>
+                            </div>
+                            <div class="bg-indigo-100 p-6 rounded-xl border-2 border-indigo-400 shadow-md">
+                                <div class="font-bold text-base text-indigo-900 mb-3">元数据过滤优化</div>
+                                <div class="text-sm text-indigo-800 space-y-2">
+                                    <div class="bg-white p-3 rounded-lg"><strong>预过滤：</strong>在特定子集中执行向量计算</div>
+                                    <div class="bg-white p-3 rounded-lg"><strong>效果：</strong>提升准确率与执行效率</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="bg-orange-500 text-white px-6 py-3 rounded-full font-black text-base shadow-lg">用户查询 ↓</div>
+                </div>
+
+                <!-- 步骤5 -->
+                <div class="relative bg-gradient-to-r from-orange-50 to-orange-100 border-4 border-orange-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-orange-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">5</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-orange-900 mb-4">🔍 文本块的检索（Retrieval）</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <div class="bg-white p-5 rounded-xl border-2 border-orange-300 shadow-md text-center">
+                                <div class="text-3xl mb-2">❓</div>
+                                <div class="font-bold text-base">用户问题</div>
+                            </div>
+                            <div class="text-center text-3xl text-orange-500 font-black">→</div>
+                            <div class="bg-orange-200 p-5 rounded-xl border-2 border-orange-400 shadow-md text-center">
+                                <div class="font-bold text-base mb-2">嵌入模型</div>
+                                <div class="text-sm text-orange-800">转为查询向量</div>
+                            </div>
+                            <div class="text-center text-3xl text-orange-500 font-black">→</div>
+                            <div class="bg-white p-5 rounded-xl border-2 border-orange-300 shadow-md text-center">
+                                <div class="text-3xl mb-2">📋</div>
+                                <div class="font-bold text-base">Top-K相关文本块</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-orange-100 p-4 rounded-xl border-2 border-orange-300">
+                            <div class="text-sm text-orange-800"><strong>检索优化技术：</strong>混合检索（向量+关键词）、重排序（Reranker）、查询改写等</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center"><div class="text-5xl text-slate-400">↓</div></div>
+
+                <!-- 步骤6 -->
+                <div class="relative bg-gradient-to-r from-red-50 to-red-100 border-4 border-red-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -left-8 top-8 bg-red-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">6</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-red-900 mb-4">✨ 增强生成（Generation）</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <div class="bg-white p-5 rounded-xl border-2 border-red-300 shadow-md text-center">
+                                <div class="text-3xl mb-2">📋</div>
+                                <div class="font-bold text-base">检索到的文本块</div>
+                            </div>
+                            <div class="text-center text-3xl text-red-500 font-black">+</div>
+                            <div class="bg-white p-5 rounded-xl border-2 border-red-300 shadow-md text-center">
+                                <div class="text-3xl mb-2">❓</div>
+                                <div class="font-bold text-base">用户问题</div>
+                            </div>
+                            <div class="text-center text-3xl text-red-500 font-black">→</div>
+                            <div class="bg-gradient-to-r from-red-500 to-red-700 text-white p-5 rounded-xl shadow-xl text-center">
+                                <div class="text-3xl mb-2">🤖</div>
+                                <div class="font-bold text-base">大语言模型</div>
+                                <div class="text-sm text-red-100 mt-2">生成答案</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-red-100 p-4 rounded-xl border-2 border-red-300">
+                            <div class="text-sm text-red-800"><strong>关键技术：</strong>选择合适的大模型 + 提示词工程（Prompt Engineering）</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <div class="bg-green-600 text-white px-8 py-4 rounded-2xl font-black text-xl shadow-xl">✅ 输出：准确、可靠、有据可查的答案</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二页 -->
+    <div id="page-2" class="page">
+
+        <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+            <h1 class="text-3xl font-black text-center mb-6 text-slate-800">基于 RAG 的机载软件需求自动解析与生成流程图</h1>
+            
+            <div class="flex justify-center gap-6 mb-10">
+                <div class="flex items-center gap-3 bg-indigo-100 px-5 py-3 rounded-xl border-2 border-indigo-400">
+                    <div class="w-4 h-4 bg-indigo-600 rounded-full"></div>
+                    <span class="font-bold text-indigo-900 text-base">LlamaIndex 知识引擎</span>
+                </div>
+                <div class="flex items-center gap-3 bg-purple-100 px-5 py-3 rounded-xl border-2 border-purple-400">
+                    <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
+                    <span class="font-bold text-purple-900 text-base">LangGraph 工作流编排</span>
+                </div>
+            </div>
+
+            <div class="space-y-12">
+                
+                <!-- 步骤1 -->
+                <div class="relative bg-gradient-to-br from-indigo-50 to-indigo-100 border-4 border-indigo-400 rounded-2xl p-8 shadow-lg">
+                    <div class="absolute -top-4 -right-4 bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">🔧 LlamaIndex</div>
+                    <div class="absolute -left-8 top-8 bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">1</div>
+                    <div class="ml-10">
+                        <h2 class="text-2xl font-black text-indigo-900 mb-6">🗄️ 第一步：知识库构建</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
+                            <div class="space-y-4">
+                                <div class="bg-white p-5 rounded-xl border-2 border-slate-300 shadow-md">
+                                    <div class="text-3xl mb-2">📄</div>
+                                    <div class="font-bold text-base">适航标准文档</div>
+                                    <div class="text-sm text-slate-500">DO-178C、ARP4754</div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl border-2 border-slate-300 shadow-md">
+                                    <div class="text-3xl mb-2">📚</div>
+                                    <div class="font-bold text-base">软件需求文档</div>
+                                    <div class="text-sm text-slate-500">SRD</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-4xl text-indigo-500 font-black">→</div>
+                            <div class="space-y-4">
+                                <div class="bg-indigo-200 p-5 rounded-xl border-2 border-indigo-500 shadow-md">
+                                    <div class="font-bold text-base text-indigo-900 mb-1">句子窗口解析</div>
+                                    <div class="text-sm text-indigo-700">精准匹配 + 上下文</div>
+                                    <div class="text-xs bg-white px-3 py-1 rounded-full inline-block mt-2 font-mono">Standards</div>
+                                </div>
+                                <div class="bg-indigo-200 p-5 rounded-xl border-2 border-indigo-500 shadow-md">
+                                    <div class="font-bold text-base text-indigo-900 mb-1">固定段落分块</div>
+                                    <div class="text-sm text-indigo-700">512 tokens 逻辑完整</div>
+                                    <div class="text-xs bg-white px-3 py-1 rounded-full inline-block mt-2 font-mono">SRD</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-4xl text-indigo-500 font-black">→</div>
+                            <div class="space-y-4">
+                                <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6 rounded-xl shadow-xl text-center">
+                                    <div class="text-5xl mb-2">🗄️</div>
+                                    <div class="font-black text-lg">Qdrant 向量库</div>
+                                    <div class="text-sm text-indigo-200">向量持久化</div>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl border-2 border-indigo-500 shadow-md text-center">
+                                    <div class="text-3xl mb-2">📖</div>
+                                    <div class="font-bold text-base">术语词典 JSON</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center -my-8">
+                    <div class="bg-purple-600 text-white px-6 py-3 rounded-full border-4 border-white shadow-xl font-black text-base">进入 LangGraph 工作流 ↓</div>
+                </div>
+
+                <!-- LangGraph容器 -->
+                <div class="relative bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-10 border-4 border-purple-400 shadow-2xl">
+                    <div class="absolute -top-5 left-10 bg-purple-600 text-white px-5 py-3 rounded-full text-base font-bold shadow-xl">🔄 LangGraph 状态机编排（在线推理）</div>
+                    
+                    <div class="mt-8 space-y-10">
+                    
+                        <!-- 步骤2 -->
+                        <div class="relative bg-white border-4 border-blue-400 rounded-2xl p-8 shadow-xl">
+                            <div class="absolute -left-10 top-8 bg-blue-500 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">2</div>
+                            <div class="ml-6">
+                                <h2 class="text-2xl font-black text-blue-900 mb-6">🔄 第二步：复合需求解析</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-7 gap-5 items-center">
+                                    <div class="bg-slate-50 border-2 border-slate-300 p-5 rounded-xl text-center shadow-md">
+                                        <div class="text-5xl mb-3">💬</div>
+                                        <div class="font-bold text-base">接收输入</div>
+                                        <div class="text-sm text-slate-500 mt-2">复合需求</div>
+                                    </div>
+                                    <div class="text-center text-4xl text-blue-500 font-black">→</div>
+                                    <div class="col-span-2 bg-blue-50 border-2 border-blue-400 p-5 rounded-xl shadow-md relative">
+                                        <div class="font-bold text-base text-blue-800 mb-2">节点A: 术语消歧</div>
+                                        <div class="text-sm font-mono text-blue-500 mb-2">(pre_retrieve)</div>
+                                        <div class="text-sm text-blue-700">LLM 提取术语 → JSON 词典 O(1) 匹配</div>
+                                        <div class="absolute -top-4 right-4 bg-indigo-100 text-indigo-700 px-3 py-2 rounded-full text-xs font-bold border-2 border-indigo-400">📖 avionics_terms.json</div>
+                                    </div>
+                                    <div class="text-center text-4xl text-blue-500 font-black">→</div>
+                                    <div class="col-span-2 bg-blue-50 border-2 border-blue-400 p-5 rounded-xl shadow-md">
+                                        <div class="font-bold text-base text-blue-800 mb-2">节点B: 需求解耦</div>
+                                        <div class="text-sm font-mono text-blue-500 mb-2">(decompose)</div>
+                                        <div class="text-sm text-blue-700">拆分为原子需求（单一、独立、可测试）</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 ml-12">
+                            <div class="text-4xl text-purple-400">↓</div>
+                            <div class="bg-white px-4 py-2 rounded-full border-2 border-purple-300 font-mono text-sm font-bold text-purple-600">State: [Atomic Requirements]</div>
+                        </div>
+
+                        <!-- 步骤3 -->
+                        <div class="relative bg-white border-4 border-emerald-400 rounded-2xl p-8 shadow-xl">
+                            <div class="absolute -left-10 top-8 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">3</div>
+                            <div class="ml-6">
+                                <h2 class="text-2xl font-black text-emerald-900 mb-6">🔍 第三步：双路证据检索与测试用例生成</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-7 gap-5 items-center">
+                                    <div class="bg-slate-50 border-2 border-slate-300 p-5 rounded-xl text-center shadow-md">
+                                        <div class="text-5xl mb-3">📋</div>
+                                        <div class="font-bold text-base">接收输入</div>
+                                        <div class="text-sm text-slate-500 mt-2">原子需求列表</div>
+                                        <div class="text-xs text-slate-400 font-mono mt-1">[AR-001, ...]</div>
+                                    </div>
+                                    <div class="text-center text-4xl text-emerald-500 font-black">→</div>
+                                    <div class="col-span-2 bg-emerald-50 border-2 border-emerald-400 p-5 rounded-xl shadow-md">
+                                        <div class="font-bold text-base text-emerald-800 mb-2">节点C1: 并行双路检索</div>
+                                        <div class="text-sm font-mono text-emerald-600 mb-3">(retrieve)</div>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="bg-white p-3 rounded border-2 border-emerald-200">
+                                                <div class="font-bold text-emerald-900">Standards 泳道</div>
+                                                <div class="text-xs text-emerald-600">句子窗口检索</div>
+                                            </div>
+                                            <div class="bg-white p-3 rounded border-2 border-emerald-200">
+                                                <div class="font-bold text-emerald-900">SRD 泳道</div>
+                                                <div class="text-xs text-emerald-600">固定分块检索</div>
+                                            </div>
+                                            <div class="bg-emerald-200 p-2 rounded text-center text-xs font-mono font-bold">score ≥ 0.45</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center text-4xl text-emerald-500 font-black">→</div>
+                                    <div class="col-span-2 bg-emerald-600 text-white p-6 rounded-xl shadow-xl">
+                                        <div class="font-bold text-base mb-2">节点C2: 大模型动态生成</div>
+                                        <div class="text-sm font-mono text-emerald-200 mb-3">(generate)</div>
+                                        <div class="text-sm text-emerald-50">结合证据与原子需求，生成符合 <strong>IEEE 829</strong> 标准的测试用例</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 ml-12">
+                            <div class="text-4xl text-purple-400">↓</div>
+                            <div class="bg-white px-4 py-2 rounded-full border-2 border-purple-300 font-mono text-sm font-bold text-purple-600">State: [Generated Test Cases]</div>
+                        </div>
+
+                        <!-- 步骤4 -->
+                        <div class="relative bg-white border-4 border-purple-400 rounded-2xl p-8 shadow-xl">
+                            <div class="absolute -left-10 top-8 bg-purple-500 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-xl border-4 border-white">4</div>
+                            <div class="ml-6">
+                                <h2 class="text-2xl font-black text-purple-900 mb-6">🔗 第四步：双向追溯构建与矩阵导出</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-5 items-center">
+                                    <div class="col-span-2 bg-purple-50 border-2 border-purple-400 p-6 rounded-xl shadow-md">
+                                        <div class="font-bold text-base text-purple-800 mb-3">节点D: 序列化映射</div>
+                                        <div class="bg-white p-4 rounded border-2 border-purple-200 text-center font-mono text-sm">测试用例 → 原子需求 → 系统需求</div>
+                                        <div class="text-sm text-purple-600 mt-3 text-center">端到端追溯链路</div>
+                                    </div>
+                                    <div class="text-center text-4xl text-purple-500 font-black">→</div>
+                                    <div class="col-span-2 bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-6 rounded-xl shadow-xl text-center">
+                                        <div class="text-5xl mb-3">📊</div>
+                                        <div class="font-black text-xl">Excel 报表导出</div>
+                                        <div class="text-sm text-purple-200 mt-2">适航审查证据</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 第三页：运行示例 Demo -->
+    <div id="page-3" class="page">
+        <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+            <h1 class="text-3xl font-black text-center mb-4 text-slate-800">系统运行示例 Demo</h1>
+            <p class="text-center text-slate-500 mb-8 text-base">基于真实需求 SRD-FSECU-010368 的完整运行过程演示</p>
+
+            <!-- 步骤控制器 -->
+            <div class="flex justify-center gap-2 mb-8 flex-wrap">
+                <button onclick="showStep(0)" id="step-btn-0" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">系统配置</button>
+                <button onclick="showStep(1)" id="step-btn-1" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">输入需求</button>
+                <button onclick="showStep(2)" id="step-btn-2" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">术语消歧</button>
+                <button onclick="showStep(3)" id="step-btn-3" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">需求解耦</button>
+                <button onclick="showStep(4)" id="step-btn-4" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">双路检索</button>
+                <button onclick="showStep(5)" id="step-btn-5" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">生成用例</button>
+                <button onclick="showStep(6)" id="step-btn-6" class="px-3 py-2 bg-slate-200 rounded-lg font-bold hover:bg-slate-300 transition text-sm">追溯矩阵</button>
+            </div>
+
+            <!-- 步骤 0: 系统配置 -->
+            <div id="demo-step-0" class="demo-step">
+                <div class="bg-gradient-to-br from-slate-50 to-slate-100 border-4 border-slate-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <span class="bg-slate-600 text-white w-10 h-10 rounded-full flex items-center justify-center">⚙️</span>
+                        系统配置：模型选择与知识库参数
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 大语言模型配置 -->
+                        <div class="bg-white p-6 rounded-xl border-2 border-indigo-300 shadow-md">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="text-3xl">🤖</div>
+                                <h3 class="text-xl font-black text-indigo-900">大语言模型 (LLM)</h3>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-gradient-to-r from-indigo-100 to-indigo-50 p-4 rounded-lg border-2 border-indigo-400">
+                                    <label class="font-bold text-indigo-900 mb-2 block">选择 LLM 提供商</label>
+                                    <select id="llm-select" onchange="updateLLMInfo()" class="w-full p-2 border-2 border-indigo-300 rounded-lg font-mono text-sm bg-white focus:border-indigo-500 focus:outline-none">
+                                        <option value="deepseek" selected>DeepSeek v4-flash</option>
+                                        <option value="zhipu">智谱 GLM-5</option>
+                                        <option value="qwen">千问 Qwen3-max</option>
+                                    </select>
+                                    <div class="text-xs text-slate-600 mt-2">
+                                        <span class="font-bold">配置：</span>settings.py → llm_provider = "<span id="llm-provider-value">deepseek</span>"
+                                    </div>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg">
+                                    <div class="font-bold text-indigo-900 mb-1">API 端点</div>
+                                    <div class="text-indigo-700 text-xs font-mono" id="llm-endpoint">https://api.deepseek.com</div>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg">
+                                    <div class="font-bold text-indigo-900 mb-1">温度参数</div>
+                                    <div class="text-indigo-700">0.2 <span class="text-xs text-slate-500">(低温度，确保输出稳定)</span></div>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg">
+                                    <div class="font-bold text-indigo-900 mb-1">最大 Token</div>
+                                    <div class="text-indigo-700">8192</div>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg">
+                                    <div class="font-bold text-indigo-900 mb-1">输出格式</div>
+                                    <div class="text-indigo-700">JSON <span class="text-xs text-slate-500">(结构化输出)</span></div>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg">
+                                    <div class="font-bold text-indigo-900 mb-1">思考模式</div>
+                                    <div class="text-indigo-700">Disabled <span class="text-xs text-slate-500">(提升响应速度)</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 嵌入模型配置 -->
+                        <div class="bg-white p-6 rounded-xl border-2 border-purple-300 shadow-md">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="text-3xl">🧮</div>
+                                <h3 class="text-xl font-black text-purple-900">嵌入模型 (Embedding)</h3>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-gradient-to-r from-purple-100 to-purple-50 p-4 rounded-lg border-2 border-purple-400">
+                                    <label class="font-bold text-purple-900 mb-2 block">选择嵌入模型</label>
+                                    <select id="embed-select" onchange="updateEmbedInfo()" class="w-full p-2 border-2 border-purple-300 rounded-lg font-mono text-sm bg-white focus:border-purple-500 focus:outline-none">
+                                        <option value="bge-m3" selected>BAAI/bge-m3 (推荐，多语言)</option>
+                                        <option value="bge-small-zh">BAAI/bge-small-zh (中文优化)</option>
+                                        <option value="bge-small-en">BAAI/bge-small-en-v1.5 (英文优化)</option>
+                                    </select>
+                                    <div class="text-xs text-slate-600 mt-2">
+                                        <span class="font-bold">配置：</span>settings.py → embed_model_name = "<span id="embed-model-value">BAAI/bge-m3</span>"
+                                    </div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="font-bold text-purple-900 mb-1">模型特性</div>
+                                    <div class="text-purple-700 text-xs" id="embed-feature">多语言优化，支持中英文混合文档</div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="font-bold text-purple-900 mb-1">运行设备</div>
+                                    <div class="text-purple-700">Auto-detect <span class="text-xs text-slate-500">(优先 GPU)</span></div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="font-bold text-purple-900 mb-1">向量维度</div>
+                                    <div class="text-purple-700"><span id="embed-dim">1024</span> 维</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 知识库分块策略 -->
+                        <div class="bg-white p-6 rounded-xl border-2 border-emerald-300 shadow-md">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="text-3xl">📚</div>
+                                <h3 class="text-xl font-black text-emerald-900">知识库分块策略</h3>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-emerald-50 p-4 rounded-lg border-l-4 border-emerald-500">
+                                    <div class="font-bold text-emerald-900 mb-2">Standards 泳道（适航标准）</div>
+                                    <div class="space-y-1 text-emerald-700">
+                                        <div>• <strong>策略：</strong>句子窗口检索 (SentenceWindowNodeParser)</div>
+                                        <div>• <strong>窗口大小：</strong>前后各 4 句</div>
+                                        <div>• <strong>配置：</strong>sentence_window_size = 4</div>
+                                        <div>• <strong>优势：</strong>精准匹配 + 上下文完整</div>
+                                    </div>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                    <div class="font-bold text-blue-900 mb-2">SRD 泳道（软件需求文档）</div>
+                                    <div class="space-y-1 text-blue-700">
+                                        <div>• <strong>策略：</strong>固定段落分块 (SentenceSplitter)</div>
+                                        <div>• <strong>块大小：</strong>512 tokens</div>
+                                        <div>• <strong>重叠度：</strong>100 tokens</div>
+                                        <div>• <strong>配置：</strong>srd_chunk_size / srd_chunk_overlap</div>
+                                        <div>• <strong>优势：</strong>保持逻辑完整性</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 检索参数配置 -->
+                        <div class="bg-white p-6 rounded-xl border-2 border-orange-300 shadow-md">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="text-3xl">🔍</div>
+                                <h3 class="text-xl font-black text-orange-900">检索参数</h3>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-orange-50 p-3 rounded-lg">
+                                    <div class="font-bold text-orange-900 mb-1">Top-K</div>
+                                    <div class="text-orange-700">3 <span class="text-xs text-slate-500">(每个泳道返回前 3 条)</span></div>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg">
+                                    <div class="font-bold text-orange-900 mb-1">相似度阈值</div>
+                                    <div class="text-orange-700">≥ 0.45 <span class="text-xs text-slate-500">(过滤低质量结果)</span></div>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg">
+                                    <div class="font-bold text-orange-900 mb-1">向量数据库</div>
+                                    <div class="text-orange-700">Qdrant <span class="text-xs text-slate-500">(本地持久化)</span></div>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg">
+                                    <div class="font-bold text-orange-900 mb-1">检索算法</div>
+                                    <div class="text-orange-700">HNSW <span class="text-xs text-slate-500">(高效近似最近邻)</span></div>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg">
+                                    <div class="font-bold text-orange-900 mb-1">元数据过滤</div>
+                                    <div class="text-orange-700">category 字段 <span class="text-xs text-slate-500">(Standards/SRD_Context)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-gradient-to-r from-slate-600 to-slate-800 text-white p-4 rounded-xl text-center">
+                        <div class="font-bold text-lg">✅ 系统配置完成，准备处理需求</div>
+                        <div class="text-sm text-slate-300 mt-1">配置文件：settings.py | 工作流：LangGraph | 知识引擎：LlamaIndex</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 1: 输入需求 -->
+            <div id="demo-step-1" class="demo-step" style="display:none;">
+                <div class="bg-blue-50 border-4 border-blue-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-blue-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center">1</span>
+                        输入：原始系统需求
+                    </h2>
+                    <div class="bg-white p-6 rounded-xl border-2 border-blue-300">
+                        <div class="font-bold text-lg mb-2">需求编号：SRD-FSECU-010368</div>
+                        <div class="text-base text-slate-700 leading-relaxed">
+                            需求描述：在EHSV控制襟翼PDU的电流输出测试和EHSV控制缝翼PDU的电流输出测试均正常时，FSECU支路软件的DA测试驱动应返回成功状态，反之，返回失败状态
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 2: 术语消歧 -->
+            <div id="demo-step-2" class="demo-step" style="display:none;">
+                <div class="bg-indigo-50 border-4 border-indigo-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-indigo-900 mb-4 flex items-center gap-2">
+                        <span class="bg-indigo-600 text-white w-10 h-10 rounded-full flex items-center justify-center">2</span>
+                        节点A：术语消歧 (pre_retrieve)
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl border-2 border-indigo-300">
+                            <div class="font-bold text-lg mb-3 text-indigo-900">LLM 提取关键术语</div>
+                            <div class="space-y-2 text-sm">
+                                <div class="bg-indigo-50 p-3 rounded">• EHSV</div>
+                                <div class="bg-indigo-50 p-3 rounded">• PDU</div>
+                                <div class="bg-indigo-50 p-3 rounded">• FSECU</div>
+                                <div class="bg-indigo-50 p-3 rounded">• DA测试驱动</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border-2 border-indigo-300">
+                            <div class="font-bold text-lg mb-3 text-indigo-900">JSON 词典匹配结果</div>
+                            <div class="space-y-2 text-sm">
+                                <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                                    <strong>EHSV:</strong> 电液伺服阀（Electro-Hydraulic Servo Valve）
+                                </div>
+                                <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                                    <strong>PDU:</strong> 动力驱动单元（Power Drive Unit）
+                                </div>
+                                <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                                    <strong>FSECU:</strong> 襟缝翼控制计算机（Flap/Slat Electronic Control Unit）
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 3: 需求解耦 -->
+            <div id="demo-step-3" class="demo-step" style="display:none;">
+                <div class="bg-blue-50 border-4 border-blue-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-blue-900 mb-4 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center">3</span>
+                        节点B：需求解耦 (decompose)
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-xl border-2 border-blue-300">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full font-bold">AR-001</span>
+                                <span class="text-xs bg-blue-100 px-3 py-1 rounded-full">功能</span>
+                            </div>
+                            <div class="text-base">当EHSV控制襟翼PDU的电流输出测试结果为正常且EHSV控制缝翼PDU的电流输出测试结果为正常时，FSECU支路软件的DA测试驱动应返回成功状态。</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border-2 border-blue-300">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full font-bold">AR-002</span>
+                                <span class="text-xs bg-blue-100 px-3 py-1 rounded-full">功能</span>
+                            </div>
+                            <div class="text-base">当EHSV控制襟翼PDU的电流输出测试结果为不正常或EHSV控制缝翼PDU的电流输出测试结果为不正常时，FSECU支路软件的DA测试驱动应返回失败状态。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 4: 双路检索 -->
+            <div id="demo-step-4" class="demo-step" style="display:none;">
+                <div class="bg-emerald-50 border-4 border-emerald-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-emerald-900 mb-4 flex items-center gap-2">
+                        <span class="bg-emerald-600 text-white w-10 h-10 rounded-full flex items-center justify-center">4</span>
+                        节点C1：并行双路检索 (retrieve)
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl border-2 border-emerald-300">
+                            <div class="font-bold text-lg mb-3 text-emerald-900">Standards 泳道检索结果</div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-emerald-50 p-3 rounded border-l-4 border-emerald-500">
+                                    <div class="font-bold">IEEE Std 829-2008.pdf | p.113</div>
+                                    <div class="text-xs text-emerald-700 mt-1">score: 0.556</div>
+                                    <div class="text-xs mt-2">测试程序合规性要求，生命周期数据管理...</div>
+                                </div>
+                                <div class="bg-emerald-50 p-3 rounded border-l-4 border-emerald-500">
+                                    <div class="font-bold">IEEE Std 829-2008.pdf | p.108</div>
+                                    <div class="text-xs text-emerald-700 mt-1">score: 0.546</div>
+                                    <div class="text-xs mt-2">测试计划生命周期数据目标...</div>
+                                </div>
+                                <div class="bg-emerald-50 p-3 rounded border-l-4 border-emerald-500">
+                                    <div class="font-bold">SAE_ARP4754A.pdf | p.53</div>
+                                    <div class="text-xs text-emerald-700 mt-1">score: 0.546</div>
+                                    <div class="text-xs mt-2">派生需求安全性审查，故障条件分析...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border-2 border-emerald-300">
+                            <div class="font-bold text-lg mb-3 text-emerald-900">SRD 泳道检索结果</div>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                                    <div class="font-bold">襟缝翼控制计算机软件高层需求文档</div>
+                                    <div class="text-xs text-blue-700 mt-1">score: 0.661</div>
+                                    <div class="text-xs mt-2">EHSV控制接口数据，测试接口RS422总线...</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                                    <div class="font-bold">襟缝翼控制计算机软件高层需求文档</div>
+                                    <div class="text-xs text-blue-700 mt-1">score: 0.619</div>
+                                    <div class="text-xs mt-2">指令支路与监控支路应用软件功能区别...</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                                    <div class="font-bold">襟缝翼控制计算机软件高层需求文档</div>
+                                    <div class="text-xs text-blue-700 mt-1">score: 0.617</div>
+                                    <div class="text-xs mt-2">引导加载软件功能，上电引导程序...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-emerald-100 p-4 rounded-xl text-center">
+                        <span class="font-bold text-emerald-900">过滤阈值: score ≥ 0.45</span>
+                        <span class="text-sm text-emerald-700 ml-4">共检索到 6 条高质量证据</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 5: 生成测试用例 -->
+            <div id="demo-step-5" class="demo-step" style="display:none;">
+                <div class="bg-purple-50 border-4 border-purple-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-purple-900 mb-4 flex items-center gap-2">
+                        <span class="bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center">5</span>
+                        节点C2：大模型动态生成测试用例 (generate)
+                    </h2>
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        <div class="bg-gradient-to-r from-purple-100 to-purple-50 p-4 rounded-xl border-2 border-purple-400 mb-4">
+                            <div class="font-bold text-purple-900 mb-2">AR-001 相关测试用例（5个）</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border-2 border-purple-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-purple-600 text-white px-3 py-1 rounded-full font-bold text-xs">TC-...-AR-001-01</span>
+                                <span class="text-xs bg-purple-100 px-3 py-1 rounded-full">正常范围测试</span>
+                            </div>
+                            <div class="text-sm space-y-2">
+                                <div><strong>标题:</strong> 两个测试均正常时DA测试驱动返回成功</div>
+                                <div><strong>追溯:</strong> AR-001 ← SRD-FSECU-010368</div>
+                                <div><strong>证据:</strong> IEEE 829 p.113; SAE ARP4754A p.53</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border-2 border-purple-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-purple-600 text-white px-3 py-1 rounded-full font-bold text-xs">TC-...-AR-001-02</span>
+                                <span class="text-xs bg-purple-100 px-3 py-1 rounded-full">逻辑与判定测试</span>
+                            </div>
+                            <div class="text-sm space-y-2">
+                                <div><strong>标题:</strong> 襟翼测试正常、缝翼测试失败时DA测试驱动返回失败</div>
+                                <div><strong>追溯:</strong> AR-001 ← SRD-FSECU-010368</div>
+                                <div><strong>证据:</strong> IEEE 829 p.113; SAE ARP4754A p.53</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border-2 border-purple-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-purple-600 text-white px-3 py-1 rounded-full font-bold text-xs">TC-...-AR-001-05</span>
+                                <span class="text-xs bg-purple-100 px-3 py-1 rounded-full">健壮性测试</span>
+                            </div>
+                            <div class="text-sm space-y-2">
+                                <div><strong>标题:</strong> 测试结果信号无效时的健壮性测试</div>
+                                <div><strong>追溯:</strong> AR-001 ← SRD-FSECU-010368</div>
+                                <div><strong>证据:</strong> IEEE 829 p.113; SAE ARP4754A p.53</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-blue-100 to-blue-50 p-4 rounded-xl border-2 border-blue-400 mt-6 mb-4">
+                            <div class="font-bold text-blue-900 mb-2">AR-002 相关测试用例（5个）</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border-2 border-blue-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full font-bold text-xs">TC-...-AR-002-01</span>
+                                <span class="text-xs bg-blue-100 px-3 py-1 rounded-full">正常范围测试</span>
+                            </div>
+                            <div class="text-sm space-y-2">
+                                <div><strong>标题:</strong> 襟翼PDU电流测试不正常时返回失败状态</div>
+                                <div><strong>追溯:</strong> AR-002 ← SRD-FSECU-010368</div>
+                                <div><strong>证据:</strong> SAE ARP4754A p.53</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border-2 border-blue-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full font-bold text-xs">TC-...-AR-002-04</span>
+                                <span class="text-xs bg-blue-100 px-3 py-1 rounded-full">正常范围测试</span>
+                            </div>
+                            <div class="text-sm space-y-2">
+                                <div><strong>标题:</strong> 两个PDU电流测试均正常时返回成功状态（反向验证）</div>
+                                <div><strong>追溯:</strong> AR-002 ← SRD-FSECU-010368</div>
+                                <div><strong>证据:</strong> SAE ARP4754A p.53</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-purple-100 p-4 rounded-xl text-center">
+                        <span class="font-bold text-purple-900">共生成 10 个测试用例</span>
+                        <span class="text-sm text-purple-700 ml-4">符合 IEEE 829 标准</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤 6: 追溯矩阵 -->
+            <div id="demo-step-6" class="demo-step" style="display:none;">
+                <div class="bg-pink-50 border-4 border-pink-400 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-black text-pink-900 mb-4 flex items-center gap-2">
+                        <span class="bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center">6</span>
+                        节点D：双向追溯矩阵与 Excel 导出
+                    </h2>
+                    <div class="bg-white p-6 rounded-xl border-2 border-pink-300 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-pink-100">
+                                <tr>
+                                    <th class="p-3 text-left border">系统需求</th>
+                                    <th class="p-3 text-left border">原子需求</th>
+                                    <th class="p-3 text-left border">测试用例</th>
+                                    <th class="p-3 text-left border">证据引用</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border" rowspan="5">SRD-FSECU-010368</td>
+                                    <td class="p-3 border" rowspan="5">AR-001</td>
+                                    <td class="p-3 border">TC-...-AR-001-01</td>
+                                    <td class="p-3 border text-xs">IEEE 829 p.113; SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-001-02</td>
+                                    <td class="p-3 border text-xs">IEEE 829 p.113; SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-001-03</td>
+                                    <td class="p-3 border text-xs">IEEE 829 p.113; SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-001-04</td>
+                                    <td class="p-3 border text-xs">IEEE 829 p.113; SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-001-05</td>
+                                    <td class="p-3 border text-xs">IEEE 829 p.113; SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border" rowspan="5">SRD-FSECU-010368</td>
+                                    <td class="p-3 border" rowspan="5">AR-002</td>
+                                    <td class="p-3 border">TC-...-AR-002-01</td>
+                                    <td class="p-3 border text-xs">SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-002-02</td>
+                                    <td class="p-3 border text-xs">SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-002-03</td>
+                                    <td class="p-3 border text-xs">SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-002-04</td>
+                                    <td class="p-3 border text-xs">SAE ARP4754A p.53</td>
+                                </tr>
+                                <tr class="hover:bg-pink-50">
+                                    <td class="p-3 border">TC-...-AR-002-05</td>
+                                    <td class="p-3 border text-xs">SAE ARP4754A p.53</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-xl shadow-xl text-center">
+                            <div class="text-2xl mb-2">📊</div>
+                            <div class="font-black text-lg">Excel 报表已生成</div>
+                            <div class="text-sm mt-1">包含：需求表、原子需求表、测试用例表、追溯矩阵表、证据表</div>
+                            <div class="text-xs mt-2 text-pink-100">文件名: traceability-SRD-FSECU-010368.xlsx</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航按钮 -->
+            <div class="flex justify-between mt-8">
+                <button onclick="prevStep()" id="prev-btn" class="px-6 py-3 bg-slate-300 text-slate-700 rounded-xl font-bold hover:bg-slate-400 transition">
+                    ← 上一步
+                </button>
+                <button onclick="nextStep()" id="next-btn" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition">
+                    下一步 →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 7;  // 更新为 7 个步骤（0-6）
+
+        // LLM 模型切换函数
+        function updateLLMInfo() {
+            const select = document.getElementById('llm-select');
+            const provider = select.value;
+            const providerValue = document.getElementById('llm-provider-value');
+            const endpoint = document.getElementById('llm-endpoint');
+            
+            providerValue.textContent = provider;
+            
+            const endpoints = {
+                'deepseek': 'https://api.deepseek.com',
+                'zhipu': 'https://open.bigmodel.cn/api/paas/v4/',
+                'qwen': 'https://dashscope.aliyuncs.com/compatible-mode/v1'
+            };
+            
+            endpoint.textContent = endpoints[provider];
+        }
+
+        // 嵌入模型切换函数
+        function updateEmbedInfo() {
+            const select = document.getElementById('embed-select');
+            const model = select.value;
+            const modelValue = document.getElementById('embed-model-value');
+            const feature = document.getElementById('embed-feature');
+            const dim = document.getElementById('embed-dim');
+            
+            const modelInfo = {
+                'bge-m3': {
+                    name: 'BAAI/bge-m3',
+                    feature: '多语言优化，支持中英文混合文档',
+                    dim: '1024'
+                },
+                'bge-small-zh': {
+                    name: 'BAAI/bge-small-zh',
+                    feature: '中文优化，适合纯中文文档场景',
+                    dim: '512'
+                },
+                'bge-small-en': {
+                    name: 'BAAI/bge-small-en-v1.5',
+                    feature: '英文优化，适合纯英文文档场景',
+                    dim: '384'
+                }
+            };
+            
+            modelValue.textContent = modelInfo[model].name;
+            feature.textContent = modelInfo[model].feature;
+            dim.textContent = modelInfo[model].dim;
+        }
+
+        function showPage(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + num).classList.add('active');
+            document.querySelectorAll('[id^="btn-"]').forEach(b => b.classList.remove('ring-4', 'ring-offset-2'));
+            document.getElementById('btn-' + num).classList.add('ring-4', 'ring-offset-2');
+            
+            // 如果切换到第三页，初始化显示第一步
+            if (num === 3) {
+                currentStep = 0;
+                showStep(0);
+            }
+        }
+
+        function showStep(num) {
+            if (num < 0 || num >= totalSteps) return;
+            
+            currentStep = num;
+            
+            // 隐藏所有步骤
+            document.querySelectorAll('.demo-step').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // 显示当前步骤
+            document.getElementById('demo-step-' + num).style.display = 'block';
+            
+            // 更新步骤按钮样式
+            document.querySelectorAll('[id^="step-btn-"]').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-slate-200');
+            });
+            document.getElementById('step-btn-' + num).classList.remove('bg-slate-200');
+            document.getElementById('step-btn-' + num).classList.add('bg-emerald-600', 'text-white');
+            
+            // 更新导航按钮状态
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (currentStep === 0) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            if (currentStep === totalSteps - 1) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps - 1) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        // 初始化显示第一页
+        showPage(1);
+    </script>
+</body>
+</html>

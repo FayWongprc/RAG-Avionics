@@ -83,25 +83,32 @@ def build_or_load_index(
     vector_store = QdrantVectorStore(client=qdrant_client, collection_name=collection_name)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
-    if rebuild:
+    # 检查 collection 是否存在
+    collection_exists = False
+    try:
+        collections = qdrant_client.get_collections()
+        collection_exists = any(c.name == collection_name for c in collections.collections)
+    except Exception as e:
+        print(f"⚠️ 检查 collection 失败: {e}")
+    
+    if rebuild and collection_exists:
         try:
             qdrant_client.delete_collection(collection_name=collection_name)
             print(f"✓ 已删除旧的向量库: {collection_name}")
-        except Exception:
-            pass
+            collection_exists = False
+        except Exception as e:
+            print(f"⚠️ 删除旧向量库失败: {e}")
 
-    # 如果 collection 已存在并且不要求 rebuild，直接从已有向量库"重建"索引对象
-    if not rebuild:
+    # 如果 collection 已存在并且不要求 rebuild，直接从已有向量库加载
+    if not rebuild and collection_exists:
         try:
-            info = qdrant_client.get_collection(collection_name=collection_name)
-            if info is not None:
-                print(f"✓ 加载已有向量库: {collection_name}")
-                return VectorStoreIndex.from_vector_store(
-                    vector_store=vector_store, storage_context=storage_context
-                )
-        except Exception:
-            # collection 不存在或连接异常，走构建流程
-            pass
+            print(f"✓ 加载已有向量库: {collection_name}")
+            return VectorStoreIndex.from_vector_store(
+                vector_store=vector_store, storage_context=storage_context
+            )
+        except Exception as e:
+            print(f"⚠️ 加载向量库失败: {e}，将重新构建")
+            # 加载失败，继续走构建流程
 
     # === 构建新索引：双分块策略 ===
     print("\n" + "=" * 70)
