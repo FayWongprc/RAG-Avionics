@@ -211,22 +211,6 @@ npm install --registry=https://registry.npmmirror.com
 
 ---
 
-## 📈 更新日志
-
-### v2.0.0 (2024-01)
-- ✨ 新增四维质量评估功能
-- ✨ 新增标签页式工作流 UI
-- 🎨 全新 React + Tailwind CSS UI
-- 🔧 前后端完全分离架构
-
-### v1.0.0 (2023-12)
-- 🎉 初始版本发布
-
----
-
-## 📄 License
-
-MIT License
 
 ---
 
