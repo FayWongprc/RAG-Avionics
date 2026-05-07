@@ -27,40 +27,110 @@
 
 ---
 
-## 📦 快速开始
 
-### 1. 安装后端依赖
+## 完整运行步骤
 
+### 前置要求
+- Python 3.10 或更高版本
+- Node.js 18 或更高版本
+- Git（可选，也可以直接下载 ZIP）
+
+### 详细步骤
+
+**1. 下载项目**
 ```bash
-# 激活虚拟环境（如果有）
-rag_venv\Scripts\activate
+# 打开命令行（CMD 或 PowerShell）
+# 进入你想存放项目的目录
+cd Desktop
 
-# 安装 Python 依赖
-pip install -r requirements.txt
+# 克隆项目
+git clone https://github.com/FayWongprc/RAG-Avionics.git
+
+# 进入项目目录
+cd RAG-Avionics
 ```
 
-### 2. 安装前端依赖
-
+**2. 创建 Python 虚拟环境**
 ```bash
+# 创建虚拟环境
+python -m venv rag_venv
+
+# 激活虚拟环境（Windows）
+rag_venv\Scripts\activate
+
+# 激活虚拟环境（Linux/Mac）
+# source rag_venv/bin/activate
+
+# 看到命令行前面出现 (rag_venv) 就说明激活成功
+```
+
+**3. 安装 Python 依赖**
+```bash
+# 确保虚拟环境已激活（命令行前面有 (rag_venv)）
+pip install -r requirements.txt
+
+# 等待安装完成（约 2-3 分钟）
+```
+
+**4. 安装前端依赖**
+```bash
+# 进入前端目录
 cd frontend
+
+# 安装依赖
 npm install
+
+# 等待安装完成（约 3-5 分钟）
+
+# 返回项目根目录
 cd ..
 ```
 
-### 3. 配置 API Key
+**5. 配置 API Key**
+```bash
+# 复制配置模板
+copy .env.example .env
 
-在项目根目录创建 `.env` 文件，填写至少一个 LLM API Key：
+# 用记事本打开配置文件
+notepad .env
 
-```env
-# 千问（推荐）
-DASHSCOPE_API_KEY=your_qwen_api_key
-
-# DeepSeek
-DEEPSEEK_API_KEY=your_deepseek_api_key
-
-# 智谱AI
-ZHIPU_API_KEY=your_zhipu_api_key
+# 填写你的 API Key（至少一个），保存并关闭
 ```
+
+**6. 启动后端服务**
+```bash
+# 打开第一个命令行窗口
+# 进入项目目录
+cd RAG-Avionics
+
+# 启动后端
+start_backend.bat
+
+# ⚠️ 首次启动会下载嵌入模型（2.3GB，5-10分钟）
+# 看到 "Application startup complete" 就说明启动成功
+# 不要关闭这个窗口！
+```
+
+**7. 启动前端服务**
+```bash
+# 打开第二个命令行窗口
+# 进入项目目录
+cd RAG-Avionics
+
+# 启动前端
+start_frontend.bat
+
+# 看到 "Local: http://localhost:5173/" 就说明启动成功
+# 不要关闭这个窗口！
+```
+
+**8. 使用系统**
+1. 浏览器打开：http://localhost:5173
+2. 点击左侧"重建向量索引"按钮（首次运行必须）
+3. 等待索引构建完成（约 1-2 分钟）
+4. 开始使用系统！
+
+---
 
 ### 4. 启动服务
 
@@ -86,6 +156,13 @@ python backend/main.py
 cd frontend
 npm run dev
 ```
+
+⚠️ **首次启动注意事项**：
+- 后端首次启动会自动下载嵌入模型（BAAI/bge-m3，约 2.3GB）
+- 下载位置：`~/.cache/huggingface/hub/`（Windows: `C:\Users\用户名\.cache\huggingface\hub\`）
+- 下载时间：约 5-10 分钟（取决于网速）
+- 只需下载一次，后续启动直接使用缓存
+- 如果下载失败，可以手动下载：https://huggingface.co/BAAI/bge-m3
 
 ### 5. 访问应用
 
