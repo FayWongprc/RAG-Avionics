@@ -47,19 +47,18 @@ npm install
 cd ..
 
 # 5. 配置 API Key
-copy .env.example .env  # Windows
-# cp .env.example .env  # Linux/Mac
-notepad .env  # 填写你的 API Key
+ .env  # 在该文件填写你的 API Key
 ```
 
 ### 启动服务
 
 ```bash
-# 终端 1：启动后端
-start_backend.bat
+# 启动后端
+python backend/main.py
 
-# 终端 2：启动前端
-start_frontend.bat
+# 在另一个终端启动前端
+cd frontend
+npm run dev
 ```
 
 ### 访问系统
